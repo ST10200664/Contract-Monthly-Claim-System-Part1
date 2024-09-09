@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcom To Contract Monthly Claim System</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<!-- Views/Claim/SubmitClaim.cshtml -->
+@model CMCS.Models.Claim
+
+@{
+    ViewData["Title"] = "Submit Claim";
+}
+
+<h2>Submit Claim</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<form asp-action="SubmitClaim" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="LecturerName">Lecturer Name</label>
+        <input type="text" class="form-control" asp-for="LecturerName" required />
+    </div>
+
+    <div class="form-group">
+        <label for="ClaimAmount">Claim Amount</label>
+        <input type="number" class="form-control" asp-for="ClaimAmount" required />
+    </div>
+
+    <div class="form-group">
+        <label for="SupportingDocument">Supporting Document</label>
+        <input type="file" class="form-control" asp-for="SupportingDocument" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Claim</button>
+</form>
+<!-- Views/Claim/ApproveClaims.cshtml -->
+@model IEnumerable<CMCS.Models.Claim>
+
+@{
+    ViewData["Title"] = "Approve Claims";
+}
+
+<h2>Approve Claims</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Claim ID</th>
+            <th>Lecturer Name</th>
+            <th>Claim Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var claim in Model)
+        {
+            <tr>
+                <td>@claim.ClaimID</td>
+                <td>@claim.LecturerName</td>
+                <td>@claim.ClaimAmount</td>
+                <td>@claim.Status</td>
+                <td>
+                    @if (claim.Status == "Pending")
+                    {
+                        <a class="btn btn-success" asp-action="Approve" asp-route-id="@claim.ClaimID">Approve</a>
+                        <a class="btn btn-danger" asp-action="Reject" asp-route-id="@claim.ClaimID">Reject</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Views/Claim/TrackStatus.cshtml -->
+@model CMCS.Models.Claim
+
+@{
+    ViewData["Title"] = "Track Claim Status";
+}
+
+<h2>Track Claim Status</h2>
+
+@if (Model != null)
+{
+    <p>Claim ID: @Model.ClaimID</p>
+    <p>Status: @Model.Status</p>
+
+    @if (Model.Status == "Rejected")
+    {
+        <p>Remarks: @Model.Remarks</p>
+    }
+}
+else
+{
+    <p>Claim not found.</p>
+}
+
